@@ -9,7 +9,7 @@
 function success(position) {
   const latitude = position.coords.latitude;
   const longitude = position.coords.longitude;
-  getMap(latitude, longitude);
+  displayMap(latitude, longitude);
 }
 
 function error() {
@@ -31,10 +31,25 @@ function error() {
   } else {
     alert("Unable to retrieve location");
   }
+  
+  const locationInput = prompt("Enter latitude and longitude coordinates (e.g., 37.7749, -122.4194) to view a specific location on the map:");
+  if (locationInput) {
+    const [latitude, longitude] = locationInput.split(',').map(coord => parseFloat(coord.trim()));
+    if (!isNaN(latitude) && !isNaN(longitude)) {
+      displayMap(latitude, longitude);
+    } else {
+      alert("Invalid coordinates. Please enter latitude and longitude in the correct format.");
+    }
+  }
 }
 
-function getMap(latitude, longitude) {
+function displayMap(latitude, longitude) {
   const map = L.map("map").setView([latitude, longitude], 5);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
   L.marker([latitude, longitude]).addTo(map);
+  
+  const latLngMsg = `Latitude: ${latitude}, Longitude: ${longitude}`;
+  const latLngDiv = document.createElement('div');
+  latLngDiv.textContent = latLngMsg;
+  document.body.appendChild(latLngDiv);
 }
